@@ -9,6 +9,8 @@
 #include "Blueprint/UserWidget.h"
 #include "MenuSystem/MainMenu.h"
 #include "MenuSystem/MenuWidget.h"
+#include "OnlineSubsystem.h"
+
 
 UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitializer &ObjectInitializer) {
 	ConstructorHelpers::FClassFinder<UUserWidget> MenuBPClass(TEXT("/Game/MenuSystem/WBP_MainMenu"));
@@ -37,12 +39,26 @@ UPuzzlePlatformsGameInstance::UPuzzlePlatformsGameInstance(const FObjectInitiali
 
 void UPuzzlePlatformsGameInstance::Init()
 {
+	IOnlineSubsystem* SubSystem = IOnlineSubsystem::Get();
+	if (SubSystem!=nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Found subsystem %s"),*SubSystem->GetSubsystemName().ToString());
+		IOnlineSessionPtr SessionInterface = SubSystem->GetSessionInterface();
+		if (SessionInterface.IsValid())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Found SessionInterface"));
+		}
+	}
+	else {
+		UE_LOG(LogTemp, Error, TEXT("Found no subsystem"), );
+	}
+
 	Super::Init();
 	UE_LOG(LogTemp, Warning, TEXT("GameInstance Init"));
 }
 
 
-void UPuzzlePlatformsGameInstance::LoadMenu()
+void UPuzzlePlatformsGameInstance::LoadMenuWidget()
 {
 	if (!ensure(MenuClass!=nullptr))
 	{
