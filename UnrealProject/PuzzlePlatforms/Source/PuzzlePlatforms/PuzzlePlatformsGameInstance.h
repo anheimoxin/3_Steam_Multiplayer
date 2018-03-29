@@ -12,7 +12,7 @@
  *
  */
 UCLASS()
-class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance,public IMenuInterface
+class PUZZLEPLATFORMS_API UPuzzlePlatformsGameInstance : public UGameInstance, public IMenuInterface
 {
 	GENERATED_BODY()
 
@@ -43,5 +43,8 @@ private:
 
 	IOnlineSessionPtr SessionInterface;
 
-	void OnCreateSessionComplete(FName SessionName,bool Success);
+	void OnCreateSessionComplete(FName SessionName, bool Success);
+	void OnDestroySessionComplete(FName SessionName, bool Success);
+
+	void CreateSession();
 };
