@@ -80,25 +80,16 @@ void UMainMenu::HostServer()
 
 void UMainMenu::JoinServer()
 {
-	if (SelectedIndex.IsSet())
+	if (SelectedIndex.IsSet() && MenuInterface != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"),SelectedIndex.GetValue());
+		MenuInterface->Join(SelectedIndex.GetValue());
 	}
 	else {
 		UE_LOG(LogTemp, Warning, TEXT("Selected Index Not Set"));
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("I'm gonna join a server"));
-	if (MenuInterface != nullptr) {
-		/*if (!ensure(IPAddressField != nullptr))
-		{
-			UE_LOG(LogTemp, Error, TEXT("IPAddressField is nullptr"));
-			return;
-		}
-		const FString& Address = IPAddressField->GetText().ToString();*/
-		MenuInterface->Join("");
-
-	}
 }
 
 void UMainMenu::OpenJoinMenu()
