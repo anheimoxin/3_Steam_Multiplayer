@@ -7,14 +7,16 @@
 #include "ServerRow.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class PUZZLEPLATFORMS_API UServerRow : public UUserWidget
 {
 	GENERATED_BODY()
-	
-	
-	
-	
+
+public:
+	UPROPERTY(Meta = (BindWidget))
+		class UTextBlock* ServerName;
+
+
 };

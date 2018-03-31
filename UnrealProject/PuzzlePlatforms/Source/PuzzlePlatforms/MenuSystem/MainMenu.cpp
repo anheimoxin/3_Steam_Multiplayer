@@ -7,6 +7,7 @@
 #include "MenuInterface.h"
 #include "UObject/ConstructorHelpers.h"
 #include "ServerRow.h"
+#include "Components/TextBlock.h"
 
 
 UMainMenu::UMainMenu(const FObjectInitializer &ObjectInitializer)
@@ -15,6 +16,25 @@ UMainMenu::UMainMenu(const FObjectInitializer &ObjectInitializer)
 	if (!ensure(ServerRowBPClass.Class != nullptr)) return;
 
 	ServerRowClass = ServerRowBPClass.Class;
+}
+
+void UMainMenu::SetServerList(TArray<FString> ServerNames)
+{
+	UWorld* World = this->GetWorld();
+	if (!ensure(World != nullptr)) return;
+
+	ServerList->ClearChildren();
+
+	for (const FString& ServerName : ServerNames) {
+		UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
+		if (!ensure(Row != nullptr)) return;
+
+		Row->ServerName->SetText(FText::FromString(ServerName));
+
+		ServerList->AddChild(Row);
+	}
+
+
 }
 
 bool UMainMenu::Initialize()
@@ -58,15 +78,9 @@ void UMainMenu::JoinServer()
 			UE_LOG(LogTemp, Error, TEXT("IPAddressField is nullptr"));
 			return;
 		}
-		const FString& Address = IPAddressField->GetText().ToString();
-		MenuInterface->Join(Address);*/
-		UWorld* World = this->GetWorld();
-		if (!ensure(World != nullptr)) return;
+		const FString& Address = IPAddressField->GetText().ToString();*/
+		MenuInterface->Join("");
 
-		UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
-		if (!ensure(Row != nullptr)) return;
-
-		ServerList->AddChild(Row);
 	}
 }
 
@@ -76,6 +90,11 @@ void UMainMenu::OpenJoinMenu()
 	if (!ensure(MenuSwitcher != nullptr)) return;
 	if (!ensure(JoinMenu != nullptr)) return;
 	MenuSwitcher->SetActiveWidget(JoinMenu);
+
+	if (MenuInterface != nullptr)
+	{
+		MenuInterface->RefreshServerList();
+	}
 }
 
 void UMainMenu::OpenMainMenu()
@@ -89,7 +108,7 @@ void UMainMenu::OpenMainMenu()
 void UMainMenu::QuitPressed()
 {
 	UWorld* World = GetWorld();
-	if (!ensure(World!=nullptr))
+	if (!ensure(World != nullptr))
 	{
 		UE_LOG(LogTemp, Error, TEXT("World in nullptr"));
 		return;
