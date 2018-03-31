@@ -8,6 +8,7 @@
 #include "UObject/ConstructorHelpers.h"
 #include "ServerRow.h"
 #include "Components/TextBlock.h"
+#include "LogMacros.h"
 
 
 UMainMenu::UMainMenu(const FObjectInitializer &ObjectInitializer)
@@ -25,16 +26,24 @@ void UMainMenu::SetServerList(TArray<FString> ServerNames)
 
 	ServerList->ClearChildren();
 
+	uint32 i = 0;
 	for (const FString& ServerName : ServerNames) {
 		UServerRow* Row = CreateWidget<UServerRow>(World, ServerRowClass);
 		if (!ensure(Row != nullptr)) return;
 
 		Row->ServerName->SetText(FText::FromString(ServerName));
+		Row->Setup(this, i);
+		++i;
 
 		ServerList->AddChild(Row);
 	}
 
 
+}
+
+void UMainMenu::SelectIndex(uint32 Index)
+{
+	SelectedIndex = Index;
 }
 
 bool UMainMenu::Initialize()
@@ -71,6 +80,14 @@ void UMainMenu::HostServer()
 
 void UMainMenu::JoinServer()
 {
+	if (SelectedIndex.IsSet())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"),SelectedIndex.GetValue());
+	}
+	else {
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index Not Set"));
+	}
+
 	UE_LOG(LogTemp, Warning, TEXT("I'm gonna join a server"));
 	if (MenuInterface != nullptr) {
 		/*if (!ensure(IPAddressField != nullptr))

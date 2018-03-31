@@ -16,6 +16,9 @@ public:
 	UMainMenu(const FObjectInitializer &ObjectInitializer);
 
 	void SetServerList(TArray<FString> ServerNames);
+
+	void SelectIndex(uint32 Index);
+
 protected:
 	virtual bool Initialize();
 
@@ -49,6 +52,8 @@ private:
 
 	UPROPERTY(Meta = (BindWidget))
 		class UButton* QuitButton;
+
+	TOptional<uint32> SelectedIndex;
 
 	UFUNCTION()
 		void HostServer();
