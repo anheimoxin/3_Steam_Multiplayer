@@ -9,6 +9,7 @@
 #include "ServerRow.h"
 #include "Components/TextBlock.h"
 #include "LogMacros.h"
+#include "PanelWidget.h"
 
 
 UMainMenu::UMainMenu(const FObjectInitializer &ObjectInitializer)
@@ -44,6 +45,7 @@ void UMainMenu::SetServerList(TArray<FString> ServerNames)
 void UMainMenu::SelectIndex(uint32 Index)
 {
 	SelectedIndex = Index;
+	UpdateChildren();
 }
 
 bool UMainMenu::Initialize()
@@ -82,7 +84,7 @@ void UMainMenu::JoinServer()
 {
 	if (SelectedIndex.IsSet() && MenuInterface != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"),SelectedIndex.GetValue());
+		UE_LOG(LogTemp, Warning, TEXT("Selected Index %d"), SelectedIndex.GetValue());
 		MenuInterface->Join(SelectedIndex.GetValue());
 	}
 	else {
@@ -129,4 +131,17 @@ void UMainMenu::QuitPressed()
 		return;
 	}
 	PlayerController->ConsoleCommand("quit");
+}
+
+void UMainMenu::UpdateChildren()
+{
+	uint32 count = ServerList->GetChildrenCount();
+	for (uint32 i = 0; i < count; ++i)
+	{
+		auto Row = Cast<UServerRow>(ServerList->GetChildAt(i));
+		if (Row != nullptr)
+		{
+			Row->Selected = (SelectedIndex.IsSet() && SelectedIndex.GetValue() == i);
+		}
+	}
 }

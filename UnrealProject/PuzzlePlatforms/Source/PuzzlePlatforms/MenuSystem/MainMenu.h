@@ -53,8 +53,6 @@ private:
 	UPROPERTY(Meta = (BindWidget))
 		class UButton* QuitButton;
 
-	TOptional<uint32> SelectedIndex;
-
 	UFUNCTION()
 		void HostServer();
 
@@ -69,4 +67,8 @@ private:
 
 	UFUNCTION()
 		void QuitPressed();
+
+	TOptional<uint32> SelectedIndex;
+
+	void UpdateChildren();
 };
